@@ -1,0 +1,59 @@
+CREATE TABLE Departments
+( 
+  DepID numeric(10) not null,
+  DEPNAME varchar2(50) not null,
+  CONSTRAINT Departments_PK PRIMARY KEY (DepID)
+);
+
+CREATE TABLE Employees
+( 
+  EmpID numeric(10) not null,
+  DepID numeric(10) not null,
+  EmpName varchar2(50) not null,
+  EmpAge numeric(10) not null,
+  PRIMARY KEY(EmpID),
+  CONSTRAINT Departments_PK_Emp
+    FOREIGN KEY (DepID)
+    REFERENCES Departments(DepID)
+)
+
+CREATE TABLE Employee_Children
+( 
+  EmpID numeric(10) not null,
+  ChildID numeric(10) not null,
+  ChildName varchar2(50) not null,
+  ChildAge numeric(10) not null,
+  CONSTRAINT Departments_PK_Child
+    FOREIGN KEY (EmpID)
+    REFERENCES Employees(EmpID)
+)
+
+select  emp.EmpName,empchild.ChildName
+from Employees emp inner join Employee_Children empchild on empchild.EmpID = emp.EmpID;
+
+select dept.DEPNAME, emp.EmpName,emp.EmpAge
+from Employees emp left join Departments dept on dept.DepID = emp.DepID;
+
+select emp.EmpName,dept.DEPNAME
+from Departments dept natural join Employees emp;
+
+sELECT * FROM scott.emp WHERE scott.emp.sal BETWEEN (SELECT avg(sal) from scott.emp) AND (SELECT max(sal) from scott.emp)
+
+select * from scott.dept where scott.dept.deptno = (select deptno from scott.emp where scott.emp.sal > (SELECT avg(sal) from scott.emp))
+
+SELECT * FROM scott.emp WHERE scott.emp.sal > (SELECT avg(sal) from scott.emp) GROUP BY scott.dept.deptno
+
+    
+SELECT * FROM scott.dept WHERE scott.dept.deptno IN (SELECT scott.emp.deptno FROM scott.emp WHERE scott.emp.sal > (SELECT avg(sal) from scott.emp) GROUP BY scott.emp.deptno)
+
+
+DECLARE
+  text VARCHAR2( 100 ) := 'Nixon announces his intention to become the first president in American history to resign';
+BEGIN
+  SELECT LENGTH(text) - LENGTH(SUBSTR(text, INSTR(text,'in', 1, 2), LENGTH(text) + 1))
+    INTO text 
+    FROM dual;
+dbms_output.put_line(text);
+END;
+
+
